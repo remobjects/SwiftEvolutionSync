@@ -5,6 +5,7 @@ const LEGACY = "/Users/mh/Code/ElementsDocs/Silver/__SwiftEvolution_Legacy.md"; 
 const STATUS_OUT = "/Users/mh/Code/ElementsDocs/Silver/__SwiftEvolutionElementsStatus2.txt"; // generated status file for comparisson
 
 const STATUS_IN = "/Users/mh/Code/ElementsDocs/Silver/__SwiftEvolutionElementsStatus.txt";
+const OPEN_ISSUES = "/Users/mh/Library/Caches/RemObjects Software/Bugs/issues-status-open.cached.json";
 const OUTPUT = "/Users/mh/Code/ElementsDocs/Silver/__SwiftEvolutionStatus";
 const SWIFT_ORG_BASE_URL = "https://github.com/apple/swift-evolution/blob/master/proposals/";
 
@@ -73,6 +74,9 @@ type
 
     method ParseStatus();
     begin
+
+      var lOpenIssues := JsonDocument.FromFile(OPEN_ISSUES);
+
       var lLegacy := File.ReadLines(STATUS_IN);
       for each l in lLegacy do begin
         if length(l) > 0 then begin
@@ -86,21 +90,34 @@ type
               if i = 0 then
                 continue;
 
-              s := s.Trim.ToLower;
-              if s = "not applicable" then
+              var s := s.Trim;
+              var sl := s.ToLower;
+              if sl = "not applicable" then
                 lProposal.NotApplicable := true
-              else if s in ["SBL", "swift base library"] then begin
+              else if sl in ["SBL", "swift base library"] then begin
                 lProposal.SwiftBaseLibrary := true
               end
-              else if s = "implemented" then
+              else if sl = "implemented" then
                 lProposal.Implemented := true
-              else if s.StartsWith("in=") then
-                lProposal.ImplementedIn := s.SubString(3)
-              else if s.StartsWith("id=") then
-                lProposal.IssueID := s.SubString(3)
+              else if sl.StartsWith("in=") then
+                lProposal.ImplementedIn := sl.SubString(3)
+              else if sl.StartsWith("id=") then
+                lProposal.IssueID := sl.SubString(3)
+              else if sl.StartsWith("comment=") then
+                lProposal.Comment := s.SubString(8)
               else
                 writeLn(String.Format("Unknown value for SE-{0}: {1}", lID, s));
 
+            end;
+
+            if assigned(lProposal.IssueID) then begin
+              var lOpenIssue := (lOpenIssues.Root as JsonArray).Where(i -> i["id"]:StringValue = lProposal.IssueID).FirstOrDefault;
+              if assigned(lOpenIssue) and lProposal.Implemented then begin
+                writeLn(String.Format("SE-{0} ({1}) is marked as done, but issue {2} ({3}) is open.", lProposal.ID, lProposal.Name, lProposal.IssueID, lOpenIssue["title"]));
+              end;
+              if not assigned(lOpenIssue) and not lProposal.Implemented then begin
+                writeLn(String.Format("SE-{0} ({1}) is not marked as done, but issue {2} is not open.", lProposal.ID, lProposal.Name, lProposal.IssueID));
+              end;
             end;
 
             if l ≠ lProposal.GetElementsStatusString then begin
@@ -181,9 +198,9 @@ type
 
       for each s in lKnownAppleStatusValues do begin
         if s = "Implemented" then begin
-          var lAppleSwiftVersions := fProposals.Values.Select(p -> p.AppleImplementedIn).Distinct.OrderByDescending(v -> v);
+          var lAppleSwiftVersions := fProposals.Values.Select(p -> p.AppleImplementedIn).Distinct.OrderByDescending(v -> v).Where(p -> assigned(p));
           for each v in lAppleSwiftVersions do begin
-            result := result+Environment.LineBreak+"### "+s+" in "+v+Environment.LineBreak+Environment.LineBreak;
+            result := result+Environment.LineBreak+"### "+s+" for "+v+Environment.LineBreak+Environment.LineBreak;
             for each from p in fProposals.Values where (p.AppleStatus = s) and (p.AppleImplementedIn = v) order by p.ID desc do
               result := result+p.GetMarkdown+Environment.LineBreak;
           end;

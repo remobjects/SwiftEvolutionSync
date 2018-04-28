@@ -50,6 +50,7 @@ type
     property Implemented: Boolean;
     property ImplementedIn: String;
     property IssueID: String;
+    property Comment: String;
 
     property AppleStatus: String; readonly;
     property AppleImplementedIn: String; readonly;
@@ -71,6 +72,9 @@ type
         result := result + ", Implemented";
       if length(ImplementedIn) > 0 then
         result := result + ", In="+ImplementedIn;
+
+      if length(Comment) > 0 then
+        result := result + ", Comment="+Comment;
 
       result := result.Trim();
     end;
