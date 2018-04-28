@@ -82,8 +82,10 @@ type
     method GetMarkdown: String;
     begin
       result := "* ";
-      if NotApplicable or Implemented then
-        result := result+"<s>"
+      if NotApplicable then
+        result := result+"<s style=""color: gray;"">"
+      else if Implemented then
+        result := result+"<s style=""color: green;"">"
       else if not Tracked then
         result := result+"<span style=""color: red;"">";
 
