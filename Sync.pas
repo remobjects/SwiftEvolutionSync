@@ -80,6 +80,7 @@ type
       var lLegacy := File.ReadLines(STATUS_IN);
       for each l in lLegacy do begin
         if length(l) > 0 then begin
+          l := l.Trim();
           var lSplit := l.SPlit(",");
           var lID := lSplit[0];
           var lProposal := fProposals[lID];
@@ -122,8 +123,8 @@ type
 
             if l ≠ lProposal.GetElementsStatusString then begin
               writeLn(String.Format("Data changed for SE-{0}", lID));
-              writeLn("  "+l);
-              writeLn("  "+lProposal.GetElementsStatusString);
+              writeLn($"  '{l}'");
+              writeLn($"  '{lProposal.GetElementsStatusString}'");
             end;
 
           end
