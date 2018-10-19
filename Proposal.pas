@@ -21,7 +21,7 @@ type
         if l.StartsWith("* Status:") then begin
           AppleStatus := l.SplitAtFirstOccurrenceOf(":")[1].Trim.Replace("*", "");
           if AppleStatus.StartsWith("Implemented ") then begin
-            AppleImplementedIn := AppleStatus.SplitAtFirstOccurrenceOf(" ")[1].Trim.Trim(['(', ')']);
+            AppleImplementedIn := AppleStatus.SplitAtFirstOccurrenceOf(" ")[1].Trim.SplitAtFirstOccurrenceOf(")")[0].Trim(['(', ')']);
             AppleImplementedIn := AppleImplementedIn.Replace("for ", "").Trim();
             AppleStatus := AppleStatus.SplitAtFirstOccurrenceOf(" ")[0];
           end;
