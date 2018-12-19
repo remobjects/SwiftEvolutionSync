@@ -1,6 +1,6 @@
 ﻿namespace SwiftEvolutionSync;
 
-const SWIFT_PROPOSALS = "/Users/mh/Code/Others/swift-evolution/proposals"; // folder with propoals
+const SWIFT_PROPOSALS = "/Users/mh/Code/_Others/swift-evolution/proposals"; // folder with propoals
 const LEGACY = "/Users/mh/Code/ElementsDocs/Silver/__SwiftEvolution_Legacy.md"; // old MD file, for one-time import
 const STATUS_OUT = "/Users/mh/Code/ElementsDocs/Silver/__SwiftEvolutionElementsStatus2.txt"; // generated status file for comparisson
 
@@ -100,6 +100,8 @@ type
               end
               else if sl = "implemented" then
                 lProposal.Implemented := true
+              else if sl = "wontimplement" then
+                lProposal.WontImplement := true
               else if sl.StartsWith("in=") then
                 lProposal.ImplementedIn := sl.SubString(3)
               else if sl.StartsWith("id=") then
@@ -116,12 +118,12 @@ type
               if assigned(lOpenIssue) and lProposal.Implemented then begin
                 writeLn(String.Format("SE-{0} ({1}) is marked as done, but issue {2} ({3}) is open.", lProposal.ID, lProposal.Name, lProposal.IssueID, lOpenIssue["title"]));
               end;
-              if not assigned(lOpenIssue) and not lProposal.Implemented then begin
+              if not assigned(lOpenIssue) and not lProposal.Implemented and not lProposal.WontImplement and not lProposal.NotApplicable then begin
                 writeLn(String.Format("SE-{0} ({1}) is not marked as done, but issue {2} is not open.", lProposal.ID, lProposal.Name, lProposal.IssueID));
               end;
             end;
 
-            if l ≠ lProposal.GetElementsStatusString then begin
+            if l.ToLower ≠ lProposal.GetElementsStatusString.ToLower then begin
               writeLn(String.Format("Data changed for SE-{0}", lID));
               writeLn($"  '{l}'");
               writeLn($"  '{lProposal.GetElementsStatusString}'");

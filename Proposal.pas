@@ -49,6 +49,7 @@ type
     property SwiftBaseLibrary: Boolean;
     property Implemented: Boolean;
     property ImplementedIn: String;
+    property WontImplement: Boolean;
     property IssueID: String;
     property Comment: String;
 
@@ -72,6 +73,8 @@ type
         result := result + ", Implemented";
       if length(ImplementedIn) > 0 then
         result := result + ", In="+ImplementedIn;
+      if WontImplement then
+        result := result + ", WontImplement";
 
       if length(Comment) > 0 then
         result := result + ", Comment="+Comment;
@@ -82,7 +85,7 @@ type
     method GetMarkdown: String;
     begin
       result := "* ";
-      if NotApplicable then
+      if NotApplicable or WontImplement then
         result := result+"<s style=""color: gray;"">"
       else if Implemented then
         result := result+"<s style=""color: green;"">"
@@ -94,18 +97,22 @@ type
         lName :=lName.Substring(0, 75)+"&hellip;";
       result := result+String.Format("[SE-{0}]({1}) {2}", ID, SwiftOrgLink, lName);
 
-      if NotApplicable or Implemented then
+      if NotApplicable or Implemented or WontImplement then
         result := result+"</s>"
       else if not Tracked then
         result := result+"</span>";
 
-      if NotApplicable then
-        result := result+" &mdash; (Not applicable)";
-      if Implemented then begin
+      if NotApplicable then begin
+        result := result+" &mdash; (Not applicable)"
+      end
+      else if Implemented then begin
         if length(ImplementedIn) > 0 then
           result := result+" &mdash; <b>(done, "+ImplementedIn+")</b>"
         else
           result := result+" &mdash; <b>(done)</b>";
+      end
+      else if WontImplement then begin
+        result := result+" &mdash; (won't implement)";
       end
       else if length(IssueID) > 0 then begin
         result := result+" &mdash; <b>(#"+IssueID+")</b>"
