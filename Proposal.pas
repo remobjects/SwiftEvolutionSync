@@ -21,9 +21,10 @@ type
         if l.StartsWith("* Status:") then begin
           AppleStatus := l.SplitAtFirstOccurrenceOf(":")[1].Trim.Replace("*", "");
           if AppleStatus.StartsWith("Implemented ") then begin
-            AppleImplementedIn := AppleStatus.SplitAtFirstOccurrenceOf(" ")[1].Trim.SplitAtFirstOccurrenceOf(")")[0].Trim(['(', ')']);
+            AppleImplementedIn := AppleStatus.SplitAtFirstOccurrenceOf("(")[1].Trim.SplitAtFirstOccurrenceOf(")")[0].Trim(['(', ')']);
             AppleImplementedIn := AppleImplementedIn.Replace("for ", "").Trim();
             AppleStatus := AppleStatus.SplitAtFirstOccurrenceOf(" ")[0];
+            writeLn($'{ID} AppleStatus {AppleStatus} AppleImplementedIn {AppleImplementedIn}');
           end;
           if AppleStatus.ToLower.Contains("review") then
             AppleStatus := "Review";
@@ -34,7 +35,6 @@ type
           if AppleStatus.ToLower.Contains("returned") then
             AppleStatus := "Returned";
         end;
-
 
       end;
     end;
