@@ -7,6 +7,7 @@ const STATUS_OUT = "/Users/mh/Code/ElementsDocs/Silver/__SwiftEvolutionElementsS
 const STATUS_IN = "/Users/mh/Code/ElementsDocs/Silver/__SwiftEvolutionElementsStatus.txt";
 const OPEN_ISSUES = "/Users/mh/Library/Caches/RemObjects Software/Bugs/issues-status-open.cached.json";
 const OUTPUT = "/Users/mh/Code/ElementsDocs/Silver/__SwiftEvolutionStatus";
+const MD = "/Users/mh/Code/ElementsDocs/Silver/SwiftEvolution";
 const SWIFT_ORG_BASE_URL = "https://github.com/apple/swift-evolution/blob/master/proposals/";
 
 type
@@ -179,6 +180,8 @@ type
     begin
       File.WriteText(OUTPUT+"_ByID.md", GetMarkdown());
       File.WriteText(OUTPUT+"_ByAppleStatus.md", GetMarkdownByStatus());
+      File(MD+".md").DateModified := DateTime.UtcNow;
+      File(MD+"ByID.md").DateModified := DateTime.UtcNow;
     end;
 
     method GetMarkdown: String;
