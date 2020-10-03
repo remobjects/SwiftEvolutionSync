@@ -24,7 +24,7 @@ type
             AppleImplementedIn := AppleStatus.SplitAtFirstOccurrenceOf("(")[1].Trim.SplitAtFirstOccurrenceOf(")")[0].Trim(['(', ')']);
             AppleImplementedIn := AppleImplementedIn.Replace("for ", "").Trim();
             AppleStatus := AppleStatus.SplitAtFirstOccurrenceOf(" ")[0];
-            writeLn($'{ID} AppleStatus {AppleStatus} AppleImplementedIn {AppleImplementedIn}');
+            //writeLn($'{ID} AppleStatus {AppleStatus} AppleImplementedIn {AppleImplementedIn}');
           end;
           if AppleStatus.ToLower.Contains("review") then
             AppleStatus := "Review";
