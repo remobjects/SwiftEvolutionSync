@@ -92,7 +92,7 @@ type
               if i = 0 then
                 continue;
 
-              var s := s.Trim;
+              s := s.Trim;
               var sl := s.ToLower;
               if sl = "not applicable" then
                 lProposal.NotApplicable := true
