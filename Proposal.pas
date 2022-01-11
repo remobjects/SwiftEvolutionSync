@@ -21,7 +21,12 @@ type
         if l.StartsWith("* Status:") then begin
           AppleStatus := l.SplitAtFirstOccurrenceOf(":")[1].Trim.Replace("*", "");
           if AppleStatus.StartsWith("Implemented ") then begin
-            AppleImplementedIn := AppleStatus.SplitAtFirstOccurrenceOf("(")[1].Trim.SplitAtFirstOccurrenceOf(")")[0].Trim(['(', ')']);
+            if AppleStatus.Contains("(") then
+              AppleImplementedIn := AppleStatus.SplitAtFirstOccurrenceOf("(")[1].Trim.SplitAtFirstOccurrenceOf(")")[0].Trim(['(', ')'])
+            else if AppleStatus.Contains(" in ") then
+              AppleImplementedIn := AppleStatus.SplitAtFirstOccurrenceOf(" in ")[1]
+            else
+              AppleImplementedIn := AppleStatus.SplitAtFirstOccurrenceOf(" ")[1]
             AppleImplementedIn := AppleImplementedIn.Replace("for ", "").Trim();
             AppleStatus := AppleStatus.SplitAtFirstOccurrenceOf(" ")[0];
             //writeLn($'{ID} AppleStatus {AppleStatus} AppleImplementedIn {AppleImplementedIn}');
@@ -115,7 +120,10 @@ type
         result := result+" &mdash; (won't implement)";
       end
       else if length(IssueID) > 0 then begin
-        result := result+" &mdash; <b>(#"+IssueID+")</b>"
+        if IssueID.ToUpperInvariant.StartsWith("E") then
+          result := result+" &mdash; <b>("+IssueID.ToUpperInvariant+")</b>"
+        else
+          result := result+" &mdash; <b>(#"+IssueID+")</b>"
       end
       else if SwiftBaseLibrary then begin
         result := result+" &mdash; <b>(SBL)</b>"

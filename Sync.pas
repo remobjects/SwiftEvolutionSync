@@ -5,10 +5,11 @@ const LEGACY = "/Users/mh/Code/ElementsDocs/Silver/__SwiftEvolution_Legacy.md"; 
 const STATUS_OUT = "/Users/mh/Code/ElementsDocs/Silver/__SwiftEvolutionElementsStatus2.txt"; // generated status file for comparisson
 
 const STATUS_IN = "/Users/mh/Code/ElementsDocs/Silver/__SwiftEvolutionElementsStatus.txt";
-const OPEN_ISSUES = "/Users/mh/Library/Caches/RemObjects Software/Bugs/issues-status-open.cached.json";
+const OPEN_ISSUES_PHAB = "/Users/mh/Library/Caches/RemObjects Software/Bugs/issues-status-open.cached.json";
+const OPEN_ISSUES = "/Users/mh/Library/Caches/RemObjects Software/Bugs/issues-opened.json";
 const OUTPUT = "/Users/mh/Code/ElementsDocs/Silver/__SwiftEvolutionStatus";
 const MD = "/Users/mh/Code/ElementsDocs/Silver/SwiftEvolution";
-const SWIFT_ORG_BASE_URL = "https://github.com/apple/swift-evolution/blob/master/proposals/";
+const SWIFT_ORG_BASE_URL = "https://github.com/apple/swift-evolution/blob/main/proposals/";
 
 type
   Sync = public class
@@ -109,13 +110,19 @@ type
                 lProposal.IssueID := sl.SubString(3)
               else if sl.StartsWith("comment=") then
                 lProposal.Comment := s.SubString(8)
+              else if sl = "" then
+                //ignore?
               else
                 writeLn(String.Format("Unknown value for SE-{0}: {1}", lID, s));
 
             end;
 
             if assigned(lProposal.IssueID) then begin
-              var lOpenIssue := (lOpenIssues.Root as JsonArray).Where(i -> i["id"]:StringValue = lProposal.IssueID).FirstOrDefault;
+              var lOpenIssue := if lProposal.IssueID.ToUpperInvariant.StartsWith("E") then
+                (lOpenIssues.Root as JsonArray).Where(i -> i["iid"]:StringValue = lProposal.IssueID.Substring(1)).FirstOrDefault
+              else
+                (lOpenIssues.Root as JsonArray).Where(i -> i["description"]:StringValue.StartsWith($"Original: T{lProposal.IssueID}")).FirstOrDefault;
+
               if assigned(lOpenIssue) and lProposal.Implemented then begin
                 writeLn(String.Format("SE-{0} ({1}) is marked as done, but issue {2} ({3}) is open.", lProposal.ID, lProposal.Name, lProposal.IssueID, lOpenIssue["title"]));
               end;
@@ -124,7 +131,7 @@ type
               end;
             end;
 
-            if l.ToLower ≠ lProposal.GetElementsStatusString.ToLower then begin
+            if l.ToLower.Trim([',']) ≠ lProposal.GetElementsStatusString.ToLower then begin
               writeLn(String.Format("Data changed for SE-{0}", lID));
               writeLn($"  '{l}'");
               writeLn($"  '{lProposal.GetElementsStatusString}'");
