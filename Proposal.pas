@@ -8,7 +8,7 @@ type
     begin
       ID := aFileName.LastPathComponent.SplitAtFirstOccurrenceOf("-")[0];
       //Name :=
-      Text := File.ReadText(aFileName);
+      Text := File.ReadText(aFileName).Trim;
       var lLines := Text.Replace(#13, #10).Split(#10);
       Name := lLines[0].Substring(1).Trim;
       SwiftOrgLink := SWIFT_ORG_BASE_URL+aFileName.LastPathComponent;
@@ -26,7 +26,7 @@ type
             else if AppleStatus.Contains(" in ") then
               AppleImplementedIn := AppleStatus.SplitAtFirstOccurrenceOf(" in ")[1]
             else
-              AppleImplementedIn := AppleStatus.SplitAtFirstOccurrenceOf(" ")[1]
+              AppleImplementedIn := AppleStatus.SplitAtFirstOccurrenceOf(" ")[1];
             AppleImplementedIn := AppleImplementedIn.Replace("for ", "").Trim();
             AppleStatus := AppleStatus.SplitAtFirstOccurrenceOf(" ")[0];
             //writeLn($'{ID} AppleStatus {AppleStatus} AppleImplementedIn {AppleImplementedIn}');
