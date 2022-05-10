@@ -107,7 +107,7 @@ type
               else if sl.StartsWith("in=") then
                 lProposal.ImplementedIn := sl.SubString(3)
               else if sl.StartsWith("id=") then
-                lProposal.IssueID := sl.SubString(3)
+                lProposal.IssueID := sl.SubString(3).ToUpperInvariant
               else if sl.StartsWith("comment=") then
                 lProposal.Comment := s.SubString(8)
               else if sl = "" then
