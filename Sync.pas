@@ -1,14 +1,15 @@
 ﻿namespace SwiftEvolutionSync;
 
 const SWIFT_PROPOSALS = "/Users/mh/Code/_Others/swift-evolution/proposals"; // folder with propoals
-const LEGACY = "/Users/mh/Code/ElementsDocs/Silver/__SwiftEvolution_Legacy.md"; // old MD file, for one-time import
-const STATUS_OUT = "/Users/mh/Code/ElementsDocs/Silver/__SwiftEvolutionElementsStatus2.txt"; // generated status file for comparisson
+const ELEMENTS_DOCS = "/Users/mh/Code/RemObjects/ElementsDocs/";
+const LEGACY = ELEMENTS_DOCS+"Silver/__SwiftEvolution_Legacy.md"; // old MD file, for one-time import
+const STATUS_OUT = ELEMENTS_DOCS+"Silver/__SwiftEvolutionElementsStatus2.txt"; // generated status file for comparisson
 
-const STATUS_IN = "/Users/mh/Code/ElementsDocs/Silver/__SwiftEvolutionElementsStatus.txt";
+const STATUS_IN = ELEMENTS_DOCS+"Silver/__SwiftEvolutionElementsStatus.txt";
 const OPEN_ISSUES_PHAB = "/Users/mh/Library/Caches/RemObjects Software/Bugs/issues-status-open.cached.json";
 const OPEN_ISSUES = "/Users/mh/Library/Caches/RemObjects Software/Bugs/issues-opened.json";
-const OUTPUT = "/Users/mh/Code/ElementsDocs/Silver/__SwiftEvolutionStatus";
-const MD = "/Users/mh/Code/ElementsDocs/Silver/SwiftEvolution";
+const OUTPUT = ELEMENTS_DOCS+"Silver/__SwiftEvolutionStatus";
+const MD = ELEMENTS_DOCS+"Silver/SwiftEvolution";
 const SWIFT_ORG_BASE_URL = "https://github.com/apple/swift-evolution/blob/main/proposals/";
 
 type

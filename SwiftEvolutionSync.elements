@@ -68,6 +68,7 @@
     <Reference Include="Elements">
       <Private>True</Private>
     </Reference>
+    <Reference Include="Echoes" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Program.pas" />
